@@ -65,7 +65,7 @@ export default function ContactsPage() {
         </Button>
       </div>
 
-      
+      {/* Main content: Two columns for People and Groups */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Individual Contacts (People) */}
         <div>
