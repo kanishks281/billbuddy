@@ -73,7 +73,7 @@ export default function ContactsPage() {
             <User className="mr-2 h-5 w-5" />
             People
           </h2>
-         
+          {/* If no contacts, show a message. Otherwise, list each contact as a card */}
           {users.length === 0 ? (
             <Card>
               <CardContent className="py-6 text-center text-muted-foreground">
