@@ -20,11 +20,21 @@ export default function Header() {
       <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
           <Image
-            src={"/logos/logo.png"}
-            alt="Splitr Logo"
-            width={200}
-            height={60}
-            className="h-11 w-auto object-contain"
+            src={"/logos/Billbuddy.png"}
+            alt="Bill Buddy Logo"
+            width={500}
+            height={100}
+            className="
+    h-11 w-auto object-contain
+    drop-shadow-md         // subtle shadow for depth
+    rounded-lg             // slightly rounded corners
+    transition-all         // smooth transitions on hover
+    duration-300
+    hover:scale-105        // slight zoom on hover
+    hover:drop-shadow-lg   // stronger shadow on hover
+    p-1                    // small padding
+    bg-black 
+  "
           />
         </Link>
 
@@ -68,7 +78,7 @@ export default function Header() {
                   userPreviewMainIdentifier: "font-semibold",
                 },
               }}
-             
+              afterSignOutUrl="/"
             />
           </Authenticated>
 

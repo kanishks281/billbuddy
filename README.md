@@ -1,36 +1,106 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Bill Buddy – Smart Expense Splitter
 
-## Getting Started
+Bill Buddy is a modern, full-stack web application for tracking, splitting, and settling shared expenses with friends, roommates, or groups. Inspired by Splitwise, it leverages the latest technologies for a seamless, real-time experience.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Effortless Expense Splitting:**  
+  Add personal or group expenses, split bills, and track who owes whom.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- **Groups & Contacts:**  
+  Organize expenses by groups (e.g., trips, roommates) or 1-to-1 contacts.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Real-Time Updates:**  
+  All changes sync instantly across devices using [Convex](https://convex.dev/).
 
-## Learn More
+- **Authentication:**  
+  Secure sign-in/sign-up with [Clerk](https://clerk.com/).
 
-To learn more about Next.js, take a look at the following resources:
+- **Modern UI:**  
+  Built with [Next.js](https://nextjs.org/), [Tailwind CSS](https://tailwindcss.com/), and [shadcn/ui](https://ui.shadcn.com/).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Notifications & Email:**  
+  Get notified of group activity and settlements (via [Resend](https://resend.com/)).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **AI Assistance:**  
+  Smart suggestions and summaries powered by Gemini AI.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🛠️ Tech Stack
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Frontend:** Next.js 14, React, Tailwind CSS, shadcn/ui
+- **Backend:** Convex (serverless database & functions)
+- **Auth:** Clerk
+- **Email:** Resend
+- **AI:** Gemini API
+- **Other:** Inngest (background jobs), Sonner (toasts)
+
+---
+
+## 🏁 Getting Started
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/billbuddy.git
+   cd billbuddy
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. **Set up environment variables:**
+
+   Create a `.env` file in the root directory with the following variables:
+
+   ```
+   # Convex
+   CONVEX_DEPLOYMENT=
+   NEXT_PUBLIC_CONVEX_URL=
+
+   # Clerk (Authentication)
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+   CLERK_SECRET_KEY=
+   NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+   NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+   CLERK_JWT_ISSUER_DOMAIN=
+
+   # Resend (Email)
+   RESEND_API_KEY=
+
+   # Gemini (AI)
+   GEMINI_API_KEY=
+   ```
+
+4. **Start the development server:**
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+5. **Run Convex locally (in a separate terminal):**
+   ```bash
+   npx convex dev
+   ```
+
+---
+
+## 📁 Project Structure
+
+- `/app` – Next.js app routes (pages, layouts, API)
+- `/components` – Reusable UI components (Header, Footer, Modals, etc.)
+- `/convex` – Convex backend logic (queries, mutations, schema)
+- `/hooks` – Custom React hooks (e.g., useConvexQuery)
+- `/public` – Static assets (images, logo)
+- `/styles` – Global styles (Tailwind config, etc.)
+
+
+
+

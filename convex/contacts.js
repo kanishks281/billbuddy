@@ -1,22 +1,17 @@
 // convex/contacts.js
-
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 import { internal } from "./_generated/api";
 
 /* ──────────────────────────────────────────────────────────────────────────
-   1. getAllContacts – Returns all 1‑to‑1 expense contacts and groups
+   1. getAllContacts – 1‑to‑1 expense contacts + groups
    ──────────────────────────────────────────────────────────────────────── */
 export const getAllContacts = query({
   handler: async (ctx) => {
-    // Get the currently authenticated user (centralized logic)
+    // Use the centralized getCurrentUser instead of duplicating auth logic
     const currentUser = await ctx.runQuery(internal.users.getCurrentUser);
 
-    /* 
-      ── Find all personal (1-to-1) expenses where the current user is the payer ──
-      - Only select expenses where groupId is undefined (not a group expense)
-      - This finds all expenses the user paid for someone else directly
-    */
+    /* ── personal expenses where YOU are the payer ─────────────────────── */
     const expensesYouPaid = await ctx.db
       .query("expenses")
       .withIndex("by_user_and_group", (q) =>
@@ -24,14 +19,7 @@ export const getAllContacts = query({
       )
       .collect();
 
-    /* 
-      ── Find all personal (1-to-1) expenses where the current user is NOT the payer ──
-      - Only select expenses where groupId is undefined (not a group expense)
-      - Filter to expenses where:
-        - Someone else paid (paidByUserId !== currentUser._id)
-        - The current user is included in the splits (they owe or are owed)
-      - This finds all expenses where the user participated but didn't pay
-    */
+    /* ── personal expenses where YOU are **not** the payer ─────────────── */
     const expensesNotPaidByYou = (
       await ctx.db
         .query("expenses")
@@ -43,16 +31,9 @@ export const getAllContacts = query({
         e.splits.some((s) => s.userId === currentUser._id)
     );
 
-    // Combine both sets to get all personal expenses involving the user
     const personalExpenses = [...expensesYouPaid, ...expensesNotPaidByYou];
 
-    /* 
-      ── Extract unique user IDs of all contacts from these expenses ──
-      - For each expense:
-        - If someone else paid, add their user ID
-        - For each split, add the user ID if it's not the current user
-      - This builds a set of all users the current user has had a 1-to-1 expense with
-    */
+    /* ── extract unique counterpart IDs ─────────────────────────────────── */
     const contactIds = new Set();
     personalExpenses.forEach((exp) => {
       if (exp.paidByUserId !== currentUser._id)
@@ -63,12 +44,7 @@ export const getAllContacts = query({
       });
     });
 
-    /* 
-      ── Fetch user documents for all contact IDs ──
-      - For each unique contact ID, fetch the user document from the database
-      - Return only users that exist (filter out nulls)
-      - Format each user with relevant fields for the frontend
-    */
+    /* ── fetch user docs ───────────────────────────────────────────────── */
     const contactUsers = await Promise.all(
       [...contactIds].map(async (id) => {
         const u = await ctx.db.get(id);
@@ -84,11 +60,7 @@ export const getAllContacts = query({
       })
     );
 
-    /* 
-      ── Find all groups the current user is a member of ──
-      - Query all groups, filter to those where the user is a member
-      - Map each group to a summary object for the frontend
-    */
+    /* ── groups where current user is a member ─────────────────────────── */
     const userGroups = (await ctx.db.query("groups").collect())
       .filter((g) => g.members.some((m) => m.userId === currentUser._id))
       .map((g) => ({
@@ -99,17 +71,16 @@ export const getAllContacts = query({
         type: "group",
       }));
 
-    // Sort users and groups alphabetically by name for UI consistency
+    /* sort alphabetically */
     contactUsers.sort((a, b) => a?.name.localeCompare(b?.name));
     userGroups.sort((a, b) => a.name.localeCompare(b.name));
 
-    // Return both users and groups as contacts
     return { users: contactUsers.filter(Boolean), groups: userGroups };
   },
 });
 
 /* ──────────────────────────────────────────────────────────────────────────
-   2. createGroup – Create a new group with members
+   2. createGroup – create a new group
    ──────────────────────────────────────────────────────────────────────── */
 export const createGroup = mutation({
   args: {
@@ -118,30 +89,27 @@ export const createGroup = mutation({
     members: v.array(v.id("users")),
   },
   handler: async (ctx, args) => {
-    // Get the currently authenticated user (centralized logic)
+    // Use the centralized getCurrentUser instead of duplicating auth logic
     const currentUser = await ctx.runQuery(internal.users.getCurrentUser);
 
-    // Validate group name is not empty
     if (!args.name.trim()) throw new Error("Group name cannot be empty");
 
-    // Ensure all members are unique and include the creator
     const uniqueMembers = new Set(args.members);
-    uniqueMembers.add(currentUser._id); // ensure creator is a member
+    uniqueMembers.add(currentUser._id); // ensure creator
 
-    // Validate that all member user IDs exist in the database
+    // Validate that all member users exist
     for (const id of uniqueMembers) {
       if (!(await ctx.db.get(id)))
         throw new Error(`User with ID ${id} not found`);
     }
 
-    // Insert the new group into the database with member info
     return await ctx.db.insert("groups", {
       name: args.name.trim(),
       description: args.description?.trim() ?? "",
       createdBy: currentUser._id,
       members: [...uniqueMembers].map((id) => ({
         userId: id,
-        role: id === currentUser._id ? "admin" : "member", // creator is admin
+        role: id === currentUser._id ? "admin" : "member",
         joinedAt: Date.now(),
       })),
     });

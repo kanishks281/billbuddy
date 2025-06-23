@@ -1,8 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { internal } from "./_generated/api";
-//there are two things in convex first is query and second is mutation
-//query is used to fetch data from the database and mutation is used to modify the data in the database
+
 export const store = mutation({
   args: {},
   handler: async (ctx) => {
