@@ -40,6 +40,28 @@ Bill Buddy is a modern, full-stack web application for tracking, splitting, and 
 
 ---
 
+## 🏗️ Architecture
+
+```mermaid
+graph TD;
+  A[User's Browser] -- UI/API Calls --> B[Next.js Frontend]
+  B -- Auth --> C[Clerk]
+  B -- Real-time Data --> D[Convex Backend]
+  D -- DB Functions --> E[Convex Database]
+  D -- Background Jobs --> F[Inngest]
+  F -- Email/Notifications --> G[Resend]
+  B -- AI Requests --> H[Gemini API]
+```
+
+- **Frontend (Next.js):** Handles UI, routing, and API calls. Communicates with Clerk for authentication and Convex for real-time data.
+- **Clerk:** Manages user authentication and sessions.
+- **Convex:** Serverless backend for data storage, queries, and mutations. Provides real-time sync to the frontend.
+- **Inngest:** Schedules and runs background jobs (e.g., payment reminders, analytics).
+- **Resend:** Sends email notifications (e.g., reminders, settlements).
+- **Gemini API:** Provides AI-powered features (summaries, suggestions).
+
+---
+
 ## 🏁 Getting Started
 
 1. **Clone the repository:**
@@ -100,6 +122,38 @@ Bill Buddy is a modern, full-stack web application for tracking, splitting, and 
 - `/hooks` – Custom React hooks (e.g., useConvexQuery)
 - `/public` – Static assets (images, logo)
 - `/styles` – Global styles (Tailwind config, etc.)
+
+---
+
+## 🌱 Future Features
+
+- **Mobile App:** Native iOS/Android app for on-the-go expense tracking.
+- **Payment Integrations:** Directly settle up via UPI, PayPal, or other payment gateways.
+- **Recurring Expenses:** Automatically add repeating expenses (e.g., rent, subscriptions).
+- **Multi-Currency Support:** Track expenses in different currencies with real-time conversion.
+- **Advanced Analytics:** Visualize spending trends, group stats, and personal finance insights.
+- **Group Chat:** Built-in chat for group discussions and expense clarifications.
+- **Receipt Scanning:** Use OCR to extract expense details from photos of receipts.
+- **Custom Categories:** Allow users to create and manage their own expense categories.
+- **More Notification Channels:** Push notifications, SMS, or WhatsApp reminders.
+- **Expense Approval Flows:** Require group approval for large or unusual expenses.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! To get started:
+
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/your-feature`)
+3. Make your changes and commit them
+4. Push to your fork and open a Pull Request
+
+Please follow the existing code style and add tests where appropriate.
+
+---
+
+
 
 
 
