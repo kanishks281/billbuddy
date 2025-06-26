@@ -76,11 +76,11 @@ export default function LandingPage() {
             expenses with ease.
           </p>
 
-          <div className="mx-auto mt-12 grid max-w-5xl gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mx-auto mt-12 grid max-w-5xl gap-6 md:grid-cols-2 lg:grid-cols-3 ">
             {FEATURES.map(({ title, Icon, bg, color, description }) => (
               <Card
                 key={title}
-                className="flex flex-col items-center space-y-4 p-6 text-center"
+                className="flex flex-col items-center space-y-4 p-6 text-center hover:shadow-lg transition-shadow duration-300"
               >
                 <div className={`rounded-full p-3 ${bg}`}>
                   <Icon className={`h-6 w-6 ${color}`} />
@@ -144,7 +144,7 @@ export default function LandingPage() {
       </section>
 
       {/* ───── Footer ───── */}
-      <footer className="border-t bg-gray-50 py-12 text-center text-sm text-muted-foreground">
+      <footer className="border-t bg-gray-950 py-12 text-center text-sm text-muted-foreground">
         © {new Date().getFullYear()} Bill Buddy. All rights reserved.
       </footer>
     </div>
