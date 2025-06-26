@@ -62,6 +62,113 @@ graph TD;
 
 ---
 
+### 📊 Bill Buddy Schema (ER Diagram)
+
+```mermaid
+erDiagram
+  USERS {
+    string id PK
+    string name
+    string email
+    string tokenIdentifier
+    string imageUrl
+  }
+  GROUPS {
+    string id PK
+    string name
+    string description
+    array members
+    string createdBy
+  }
+  EXPENSES {
+    string id PK
+    string groupId
+    string description
+    number amount
+    string category
+    number date
+    string splitType
+    array splits
+    string paidByUserId
+    string createdBy
+  }
+  SETTLEMENTS {
+    string id PK
+    array relatedExpenseIds
+    string groupId
+    number amount
+    string note
+    number date
+    string paidByUserId
+    string receivedByUserId
+    string createdBy
+  }
+
+  USERS ||--o{ GROUPS : "creates >"
+  USERS ||--o{ EXPENSES : "creates >"
+  USERS ||--o{ SETTLEMENTS : "creates >"
+  GROUPS ||--o{ EXPENSES : "has >"
+  GROUPS ||--o{ SETTLEMENTS : "has >"
+  EXPENSES ||--o{ SETTLEMENTS : "related to >"
+  EXPENSES }o--|| USERS : "paid by >"
+  SETTLEMENTS }o--|| USERS : "paid by >"
+  SETTLEMENTS }o--|| USERS : "received by >"
+```
+
+#### Schema Table
+
+```plaintext
+users
+-----
+id                string (pk)
+name              string
+email             string
+tokenIdentifier   string
+imageUrl          string
+
+groups
+------
+id          string (pk)
+name        string
+description string
+members     array
+createdBy   string
+
+expenses
+--------
+id            string (pk)
+groupId       string
+description   string
+amount        number
+category      string
+date          number
+splitType     string
+splits        array
+paidByUserId  string
+createdBy     string
+
+settlements
+-----------
+id                 string (pk)
+relatedExpenseIds  array
+groupId            string
+amount             number
+note               string
+date               number
+paidByUserId       string
+receivedByUserId   string
+createdBy          string
+```
+
+**Relationships:**
+- `expenses.groupId` → `groups.id`
+- `expenses.paidByUserId` / `createdBy` → `users.id`
+- `groups.createdBy` → `users.id`
+- `settlements.groupId` / `paidByUserId` / `receivedByUserId` / `createdBy` → `users.id`
+- `settlements.relatedExpenseIds` → `expenses.id`
+
+---
+
 ## 🏁 Getting Started
 
 1. **Clone the repository:**
